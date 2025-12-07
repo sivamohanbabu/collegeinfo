@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TeacherInfo System Design</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6 transition-colors duration-500" id="page">
+
+  <div class="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg dark:bg-gray-900 dark:text-gray-100">
+
+    <!-- Header -->
+    <h1 class="text-4xl font-bold text-indigo-600 text-center mb-6 dark:text-indigo-400">
+      🎯 TeacherInfo Django Project — System Design
+    </h1>
+
+    <p class="text-gray-700 mb-6 dark:text-gray-300">
+      This page explains the complete system design for the CollegeInfo – TeacherInfo Django project in a student-friendly way, including architecture, components, database design, workflow, and UI/UX interactions.
+    </p>
+
+    <!-- Dark Mode Toggle -->
+    <button onclick="toggleDarkMode()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+      🌙 Toggle Dark Mode
+    </button>
+
+    <!-- High-Level Architecture -->
+    <h2 class="text-3xl font-bold text-purple-700 mt-6 mb-2 cursor-pointer" onclick="toggleSection('arch')">1️⃣ High-Level Architecture ⬇️</h2>
+    <div id="arch" class="hidden">
+      <pre class="bg-gray-900 text-green-300 p-4 rounded-lg overflow-auto mb-6 relative">
++------------------------+
+|        Frontend        |
+| HTML + Tailwind CSS +  |
+| Django Templates       |
++------------------------+
+           |
+           v
++------------------------+
+|        Backend         |
+| Django (MVC Framework) |
+| Views, Forms, Models   |
+| Auth & Validation      |
++------------------------+
+           |
+           v
++------------------------+
+|      Database          |
+| SQLite                 |
+| TeacherProfile Table   |
+| User Table (Django)    |
++------------------------+
+           |
+           v
++------------------------+
+|      Admin Panel       |
+| Django Admin Interface |
+| Manage Teachers        |
++------------------------+
+      </pre>
+      <button onclick="copyCode(this)" class="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded">Copy</button>
+    </div>
+
+    <!-- Django Model Example -->
+    <h2 class="text-3xl font-bold text-purple-700 mt-6 mb-2 cursor-pointer" onclick="toggleSection('model')">📦 Django Model Example ⬇️</h2>
+    <div id="model" class="hidden">
+      <pre class="bg-gray-900 text-green-300 p-4 rounded-lg overflow-auto relative">
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+class TeacherProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.department}"
+      </pre>
+      <button onclick="copyCode(this)" class="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded">Copy</button>
+    </div>
+
+    <!-- Django View Example -->
+    <h2 class="text-3xl font-bold text-purple-700 mt-6 mb-2 cursor-pointer" onclick="toggleSection('view')">⚙️ Django View Example ⬇️</h2>
+    <div id="view" class="hidden">
+      <pre class="bg-gray-900 text-green-300 p-4 rounded-lg overflow-auto relative">
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('dashboard')
+    return render(request, 'login.html')
+
+@login_required
+def dashboard(request):
+    teacher = request.user.teacherprofile
+    return render(request, 'dashboard.html', {"teacher": teacher})
+      </pre>
+      <button onclick="copyCode(this)" class="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded">Copy</button>
+    </div>
+
+    <p class="text-gray-500 text-center mt-8 dark:text-gray-400">📘 Student-friendly System Design Complete!</p>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      section.classList.toggle("hidden");
+    }
+
+    function copyCode(button) {
+      const codeBlock = button.previousElementSibling.innerText;
+      navigator.clipboard.writeText(codeBlock);
+      button.innerText = "✅ Copied!";
+      setTimeout(() => button.innerText = "Copy", 2000);
+    }
+
+    function toggleDarkMode() {
+      document.getElementById("page").classList.toggle("dark");
+    }
+  </script>
+</body>
+</html>

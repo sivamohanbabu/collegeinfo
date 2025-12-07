@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TeacherInfo Project — Code Copy Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { position: relative; }
+        .copy-btn {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background: #4f46e5;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .copy-btn:hover { background: #4338ca; }
+    </style>
+</head>
+<body class="bg-gray-100 p-10">
+
+    <div class="max-w-5xl mx-auto bg-white shadow-xl p-8 rounded-xl">
+        <h1 class="text-4xl font-bold text-indigo-600 text-center mb-8">
+            TeacherInfo Project
+        </h1>
+
+        <p class="text-gray-700 mb-6 text-center">
+            Click the "Copy" button on each code block to quickly copy the code to your clipboard.
+        </p>
+
+        <!-- Example: models.py -->
+        <h2 class="text-2xl font-bold text-purple-700 mt-6 mb-2">1️⃣ models.py</h2>
+        <pre class="bg-gray-900 text-green-300 p-4 rounded-lg overflow-auto">
+<span class="copy-btn" onclick="copyCode(this)">Copy</span>
+from django.db import models
+from django.contrib.auth.models import User
+
+class TeacherProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)
+    phone = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.user.username
+        </pre>
+
+        <!-- Example: forms.py -->
+        <h2 class="text-2xl font-bold text-purple-700 mt-6 mb-2">2️⃣ forms.py</h2>
+        <pre class="bg-gray-900 text-blue-300 p-4 rounded-lg overflow-auto">
+<span class="copy-btn" onclick="copyCode(this)">Copy</span>
+from django import forms
+from django.contrib.auth.models import User
+
+class RegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    department = forms.CharField(max_length=100)
+    phone = forms.CharField(max_length=10)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password"]
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("password") != cleaned.get("confirm_password"):
+            raise forms.ValidationError("Passwords do not match.")
+        if len(cleaned.get("phone", "")) != 10:
+            raise forms.ValidationError("Phone must be 10 digits.")
+        return cleaned
+        </pre>
+
+        <!-- Example: views.py -->
+        <h2 class="text-2xl font-bold text-purple-700 mt-6 mb-2">3️⃣ views.py</h2>
+        <pre class="bg-gray-900 text-blue-200 p-4 rounded-lg overflow-auto">
+<span class="copy-btn" onclick="copyCode(this)">Copy</span>
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .forms import RegisterForm
+from .models import TeacherProfile
+
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data["username"],
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+            )
+            TeacherProfile.objects.create(
+                user=user,
+                department=form.cleaned_data["department"],
+                phone=form.cleaned_data["phone"]
+            )
+            return redirect("login")
+    else:
+        form = RegisterForm()
+    return render(request, "teacherinfo/register.html", {"form": form})
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect("dashboard")
+        else:
+            return render(request, "teacherinfo/login.html",
+                          {"error": "Invalid credentials"})
+    return render(request, "teacherinfo/login.html")
+
+@login_required
+def dashboard(request):
+    profile = TeacherProfile.objects.get(user=request.user)
+    return render(request, "teacherinfo/dashboard.html", {"profile": profile})
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+        </pre>
+
+        <!-- Example: urls.py -->
+        <h2 class="text-2xl font-bold text-purple-700 mt-6 mb-2">4️⃣ urls.py (Project-level)</h2>
+        <pre class="bg-gray-900 text-blue-200 p-4 rounded-lg overflow-auto">
+<span class="copy-btn" onclick="copyCode(this)">Copy</span>
+from django.contrib import admin
+from django.urls import path
+from teacherinfo import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('register/', views.register, name="register"),
+    path('login/', views.login_view, name="login"),
+    path('dashboard/', views.dashboard, name="dashboard"),
+    path('logout/', views.logout_view, name="logout"),
+]
+        </pre>
+
+        <!-- You can continue adding more code blocks similarly (admin.py, templates, etc.) -->
+
+    </div>
+
+    <script>
+        function copyCode(btn) {
+            const pre = btn.parentElement;
+            const code = pre.innerText.replace("Copy", ""); // remove 'Copy' text
+            navigator.clipboard.writeText(code).then(() => {
+                btn.innerText = "Copied!";
+                setTimeout(() => { btn.innerText = "Copy"; }, 2000);
+            });
+        }
+    </script>
+
+</body>
+</html>
