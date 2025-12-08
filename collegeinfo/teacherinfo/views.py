@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -52,7 +51,6 @@ def dashboard(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
-=======
 from django.shortcuts import render
 from django.http import JsonResponse
 # Create your views here.
@@ -71,4 +69,3 @@ def registerinfo(request):
     return render(request,'registerinfo.html',data)
      
 
->>>>>>> fee0cb37955689d03c653e0254ac5c711a175691
