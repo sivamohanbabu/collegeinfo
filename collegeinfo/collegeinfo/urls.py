@@ -13,6 +13,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
 
     # Additional routes
-    path('landing/', landing, name='landing'),
+    path('', landing, name='landing'),
     path('registerinfo/', registerinfo, name='registerinfo'),
 ]
