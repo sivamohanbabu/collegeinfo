@@ -4,8 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+   <style>
+    header{
+        height: 80px;
+        background-color: blue;
+
+    }
+    body{
+        margin: 0px;
+    }
+    ul{
+        margin: 0px;
+    }
+    li{
+        padding-top: 30px;
+        padding-left: 40px;
+        color: white;
+        font-size: 20px;
+    }
+    .box1{
+        height: 50px;
+        width: 200px;
+        background-color: lightblue;
+        text-align: center;
+    }
+    .box2{
+         height: 50px;
+       width: 200px;
+        background-color: lightgoldenrodyellow;
+          text-align: center;
+    }
+    .box{
+        display: flex;
+        margin:auto auto;
+        margin-left:320px;
+        margin-top: 200px;
+    }
+   </style>
 </head>
 <body>
-    landing page
+  <header style="color: black; height: 80px;">
+    <nav>
+<ul style="list-style-type: none; display: flex;">
+    <li>Home</li>
+    <li>About</li>
+    <li>Contact</li>
+</ul>
+    </nav>
+  </header>
+  <main>
+   <div class="box">
+    <a href="{% url 'register' %}">
+    <div class="box1">Teacher Login</div>
+    </a>
+    <div class="box2">Student Login</div>
+    </div>
+  </main>
 </body>
 </html>
